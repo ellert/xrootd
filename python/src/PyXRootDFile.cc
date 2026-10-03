@@ -237,16 +237,23 @@ namespace PyXRootD
   {
     static const char      *kwlist[] = { "url", "flags", "mode",
                                          "timeout", "callback", NULL };
-    const  char            *url;
-    XrdCl::OpenFlags::Flags flags    = XrdCl::OpenFlags::None;
-    XrdCl::Access::Mode     mode     = XrdCl::Access::None;
+    const char             *url;
+    unsigned int            flags_val =
+      static_cast<unsigned int>(XrdCl::OpenFlags::None);
+    unsigned int            mode_val =
+      static_cast<unsigned int>(XrdCl::Access::None);
     time_t                  timeout  = 0;
     PyObject               *callback = NULL, *pystatus = NULL;
     XrdCl::XRootDStatus     status;
 
-    if ( !PyArg_ParseTupleAndKeywords( args, kwds, "s|HHHO:open",
-         (char**) kwlist, &url, &flags, &mode, &timeout, &callback ) )
+    if ( !PyArg_ParseTupleAndKeywords( args, kwds, "s|IIHO:open",
+         (char**) kwlist, &url, &flags_val, &mode_val, &timeout, &callback ) )
       return NULL;
+
+    XrdCl::OpenFlags::Flags flags =
+      static_cast<XrdCl::OpenFlags::Flags>(flags_val);
+    XrdCl::Access::Mode mode =
+      static_cast<XrdCl::Access::Mode>(mode_val);
 
     if ( callback && callback != Py_None ) {
       XrdCl::ResponseHandler *handler = GetHandler<XrdCl::AnyObject>( callback );
@@ -1208,20 +1215,25 @@ namespace PyXRootD
   {
     static const char      *kwlist[] = { "src_file", "url", "flags", "mode",
                                          "timeout", "callback", NULL };
-    const  char            *url;
-    XrdCl::OpenFlags::Flags flags    = XrdCl::OpenFlags::None;
-    XrdCl::Access::Mode     mode     = XrdCl::Access::None;
+    const char             *url;
+    unsigned int            flags_val =
+      static_cast<unsigned int>(XrdCl::OpenFlags::None);
+    unsigned int            mode_val =
+      static_cast<unsigned int>(XrdCl::Access::None);
     time_t                  timeout  = 0;
     PyObject               *callback = NULL, *pystatus = NULL;
     XrdCl::XRootDStatus     status;
     PyObject               *tfile   = NULL;
 
-    // note flags must be parsed as 32 bit (unsigned int), since the DUP is the
-    // first to use bits beyond the length of short. Open() was not expecting
-    // flags beyond short.
-    if ( !PyArg_ParseTupleAndKeywords( args, kwds, "O!s|IHHO:open",
-         (char**) kwlist, &FileType, &tfile, &url, &flags, &mode, &timeout, &callback ) )
+    if ( !PyArg_ParseTupleAndKeywords( args, kwds, "O!s|IIHO:open",
+         (char**) kwlist, &FileType, &tfile, &url, &flags_val, &mode_val,
+         &timeout, &callback ) )
       return NULL;
+
+    XrdCl::OpenFlags::Flags flags =
+      static_cast<XrdCl::OpenFlags::Flags>(flags_val);
+    XrdCl::Access::Mode mode =
+      static_cast<XrdCl::Access::Mode>(mode_val);
 
     if ( !tfile || tfile == Py_None ) {
       PyErr_SetString( PyExc_TypeError, "openusingtemplate() expects an existing file as argument" );
