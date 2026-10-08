@@ -44,7 +44,7 @@ namespace PyXRootD
     PyObject               *pystatus = NULL;
     CopyProcess            *copyprocess = NULL;
 
-    if ( !PyArg_ParseTupleAndKeywords( args, kwds, "ss|i:copy",
+    if ( !PyArg_ParseTupleAndKeywords( args, kwds, "ss|b:copy",
          (char**) kwlist, &source, &target, &force ) ) return NULL;
 
     CopyProcessType.tp_new = PyType_GenericNew;
